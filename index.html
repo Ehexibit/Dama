@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dama</title>
+	<style>
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(8,60px);
+			grid-template-rows: repeat(8,60px);
+			box-sizing: border-box;
+			border: 2px solid black;
+			border-radius: 4px;
+			margin: auto;
+			align-items: center;	
+			grid-gap: 2px;
+			padding: 1px;
+			width: 500px;
+
+		}
+		.grid-item {
+			display: flex;
+			width: 60px;
+			height: 60px;
+			border-radius: 4px;
+			border: 1px solid grey;
+			cursor: pointer;
+			padding: 1px;
+				
+		}
+		.grid-item.empty{
+			background-color: white;
+		}
+		.grid-item.empty:hover{
+			box-shadow: inset 0px 0px 8px blue;
+		}
+		.blackcell{
+			background-color: black;
+		}
+		.piece{
+			height: 55px;
+			width: 55px;
+			border-radius: 50%;
+			background-color: black;
+			box-shadow: inset 0 1px 4px black;
+			
+		}
+		.piece.selected{
+			box-shadow: 2px 2px 5px 4px cyan, inset 0px 1px 4px black;
+		}
+		.piece:hover{
+			
+			box-shadow: 0 0 5px 4px aquamarine, inset 0px 1px 4px black;
+		} 
+		.piece.black{
+			background-color: maroon;
+		}
+		.dama{
+			background-image: url("dama.png");
+			background-size: 40px 40px;
+			background-repeat: no-repeat;
+			background-position: center;
+			
+		}
+		.piece.white{
+			background-color: white;
+		}
+		.piece.white:hover{
+			
+		}
+		.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+			height: 100vh;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+		.left {
+			flex: 1 1 15%;
+			background-color: #f2f2f2;
+			height: 100%;
+		}
+		.center {
+			flex: 1 1 50%;
+			background-color: #d9d9d9;
+			height: 100%;
+		}
+		.right {
+			flex: 1 1 25%;
+			background-color: #f2f2f2;
+			height: 100%;
+		}
+		.bottom {
+			flex: 1 1 100%;
+			background-color: #bfbfbf;
+			height: 20%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="left"></div>
+		
+		<div class="center">
+			<div class="grid"></div> <!-- Inside this grid, a board cell will be created by javaScript -->
+			<!--<iframe src="Mine.html" height="100%" width="100%"></iframe>-->
+		</div>
+		
+		<div class="right"></div>
+		<div class="bottom"></div>
+	</div>
+
+
+		<script>
+		
+		const container = document.querySelector('.grid');
+		
+		var p = 12;
+		var cp = 12;
+		let inc = 0;
+		let board = [];
+		for(let i = 0; i < 8; i++){
+			
+			board[i] = [];
+			for(let j = 0; j < 8; j++){
+
+				const cell = document.createElement('div');
+				cell.classList.add('grid-item');
+				cell.style.margin = 'auto';
+				cell.style.textAlign = 'center';
+				
+				inc++;
+				
+				cell.classList.add('empty');
+				cell.setAttribute('data-row',i);
+				cell.setAttribute('data-col',j);
+
+				if(inc > 40){
+					if((i+j) % 2 != 0){
+						
+						cell.classList.add('piece','white');
+						cell.classList.remove('empty');
+					} 
+				}
+
+				if((i+j) % 2 == 0){
+				
+					cell.classList.add('blackcell');
+					cell.style.cursor = 'default';
+					cell.classList.remove('empty');
+				}
+				else{
+					if(cp > 0){
+						cell.classList.add('piece','black'); 
+						cell.classList.remove('empty');
+						cp--; 
+					}
+				}
+				
+				
+				
+				container.appendChild(cell);
+			}
+			
+		}
+		
+		// Select all grid items
+		const gridItems = document.querySelectorAll('.grid-item');
+
+		let select = null;
+		let whiteTurn = true; // control turn 1 at a time // lets add function hasToEat() to allow extra moves
+
+		//hasToEat(){
+			//this will check if current select has something to eat for an extra move
+			//return true; if white or black turn has to eat then it can have another move
+		//}
+
+		// Click event handler function
+		function handleClick(item, items, index) {
+
+  			if (!item.classList.contains('empty')) {
+   			 	if (select === index) {
+     	 				item.classList.remove('selected');
+      				select = null;
+    			  	} else {
+     					 	item.classList.add('selected');
+      				 	if (select !== null && items[select]?.classList.contains('selected')) {
+        				 		items[select].classList.remove('selected');
+      				 	}
+      				select = index;
+   			 	}
+  			} else if (select !== null && items[select]?.classList.contains('selected')) {
+    					const pieceColor = items[select].classList.contains('white') ? 'white' : 'black';
+
+					if(items[select].classList?.contains('white') && whiteTurn === false){ 										console.log("Black should move");	return;	
+					}
+					if(items[select].classList?.contains('black') && whiteTurn === true){ 										console.log("White Should move");	return;	
+					}
+
+   					if (validMove(items[select], item)) {
+      					item.classList.add('piece', pieceColor);
+      					items[select].classList.remove('piece', pieceColor);
+      					items[select].classList.remove('selected');
+      					items[select].classList.add('empty');
+      					item.classList.remove('empty');
+      					item.classList.add('selected');
+
+      					if (!items[select].classList.contains('dama') && parseInt(item.getAttribute('data-row')) === 0 
+						|| !items[select].classList.contains('dama') && parseInt(item.getAttribute('data-row')) === 7) {
+
+        						item.classList.add('dama');
+      					}
+
+      					if (items[select].classList.contains('dama')) {
+        							item.classList.add('dama');
+       							items[select].classList.remove('dama');
+      					}
+						select = index;
+						if(items[select].classList?.contains('black')){ 
+							//add && !hasToEat() on if statement to check if finish moving		
+							whiteTurn = true;
+							console.log("White Turn!");
+						}
+						if(items[select].classList?.contains('white')){ 
+							//add && !hasToEat() on if statement to check if finish moving
+							whiteTurn = false;
+							console.log("Black Turn!");
+						}
+      					
+
+    					} else {  	console.log('Invalid Move');  }
+
+    					checkCellState();
+  			}
+
+		}//End of handeclick()
+
+			// Loop through each grid item and add a click event listener
+			gridItems.forEach((item, index) => {
+  					if (!item.classList.contains('blackcell')) {
+    						item.addEventListener('click', () => {
+      					const items = Array.from(gridItems);
+      					handleClick(item, items, index);
+    						});
+  					}
+			});
+
+		function checkCellState(){
+			const pieces = document.querySelectorAll('.piece');
+				pieces.forEach((item, index) =>{
+
+						if(item.classList.contains('isSelected')){
+							console.log(index +' is state of selected!');
+						}
+					});
+		
+		}
+
+		function gameWin(){
+		}
+
+		//Function to check valid move or we can just create a function to check valid moves everytime we select a piece
+
+		function validMove(fromCell,toCell){
+			
+				const row =  parseInt(fromCell.getAttribute('data-row'));
+				const col = parseInt(fromCell.getAttribute('data-col'));
+				const rowto =  parseInt(toCell.getAttribute('data-row'));
+				const colto = parseInt(toCell.getAttribute('data-col'));
+
+				const createQuerySelector = (row, col) => `[data-row="${row}"][data-col="${col}"]`;
+
+ 				const strRight = createQuerySelector(row - 1, col + 1);
+ 				const strLeft = createQuerySelector(row - 1, col - 1);
+  				const strRightB = createQuerySelector(row + 1, col + 1);
+  				const strLeftB = createQuerySelector(row + 1, col - 1);
+							
+				const eatCellLeft = document.querySelector(strLeft);
+				const eatCellRight = document.querySelector(strRight);
+				const eatCellLeftB = document.querySelector(strLeftB);
+				const eatCellRightB = document.querySelector(strRightB);
+
+				const pieceColor = fromCell.classList.contains('black') ? 'black' : 'white';
+
+			    if(fromCell.classList.contains('dama')){
+
+					let dir = null; 
+
+					if(row > rowto && col < colto) dir = "up-right"; //Help point out the direction of iteration
+					if(row > rowto && col > colto) dir = "up-left";
+					if(row < rowto && col < colto) dir = "down-right";
+					if(row < rowto && col > colto) dir = "down-left";
+					
+					let invertDir = null;
+
+					if(dir === "up-right") invertDir = "down-left"; //Help point out the direction of iteration
+					if(dir === "up-left") invertDir = "down-right"; //Considering It in opposite direction iteration
+					if(dir === "down-right") invertDir = "up-left"; //If point dir A intersect with invertDir B then
+					if(dir === "down-left") invertDir = "up-right"; //Eatmove is possible
+					
+					//Do Logic
+									
+					//iterate fromCell ----> toCell && toCell ---> fromCell there should No block or targetCell is equal to both;
+	
+					//index should land equals
+		
+					const targ = searchTarget(fromCell,toCell,dir); //Will return null if no target found
+					const invrt = searchTarget(toCell,fromCell,invertDir);
+
+					console.log("Target",targ);
+					console.log("Invert",invrt);
+
+					if(targ != null && targ === invrt ){
+						console.log("Amazing found target!");
+						eatCell(targ);
+						return true;
+					}
+					else if(targ === toCell){ 
+						console.log("Amazing found moves!"); //if gap between fromCell toCell is empty then it can move
+						return true;
+					}
+					console.log("Invalid Move of Dama");
+					return false;
+
+					}// End of If statement dama
+
+			else if(fromCell.classList.contains('white')){
+				
+				//Do Logic if white piece then direction is upleft or right
+
+				if((row-1 == rowto && col-1 == colto) || (row-1 == rowto && col+1 == colto)){
+					console.log("row =",row,"col =", col,"==>> rowto =", rowto,"colto =",colto);
+					return true; //Move piece
+				}
+				else if((row-2 == rowto && col-2 == colto) || (row-2 == rowto && col+2 == colto)){
+		
+					if(eatCellLeft != null && (row-2 == rowto && col-2 == colto)){
+						if(!eatCellLeft.classList.contains('empty') && !eatCellLeft.classList.contains('white')){
+						
+							eatCell(eatCellLeft);
+
+							return true;
+
+						}else{ console.log("Invalid Eat Move of White Piece"); return false; }
+					}
+					else if(eatCellRight != null  && (row-2 == rowto && col+2 == colto)){
+							if(!eatCellRight.classList.contains('empty') && !eatCellRight.classList.contains('white')){
+							
+								eatCell(eatCellRight);
+							
+								return true;
+
+							}else{ 
+									console.log("Invalid Eat Move of White Piece");
+									return false; 
+								}
+					}
+					
+
+					//if empty return false if also white piece return false if black then return true and remove piece.black 
+					//and add empty OR !!!! just use function checkEat(); how ever what if it's white
+					console.log("row =",row,"col =", col,"==>> rowto =", rowto,"colto =",colto);
+					return false;
+				}
+				else return false;
+			}
+
+
+
+
+			else{ // Piece is black
+
+				if((row+1 == rowto && col-1 == colto) || (row+1 == rowto && col+1 == colto)){
+					console.log("row =",row,"col =", col,"==>> rowto =", rowto,"colto =",colto);
+					return true;
+				}
+				else if((row+2 == rowto && col-2 == colto) || (row+2 == rowto && col+2 == colto)){
+
+				
+					if(eatCellLeftB != null && (row+2 == rowto && col-2 == colto)){
+						if(!eatCellLeftB.classList.contains('empty') && !eatCellLeftB.classList.contains('black')){
+						
+							eatCell(eatCellLeftB);
+
+							return true;
+
+						}else{ console.log("Invalid Eat Move of black Piece"); return false; }
+					
+					}
+					else if(eatCellRightB != null && (row+2 == rowto && col+2 == colto)){
+							if(!eatCellRightB.classList.contains('empty') && !eatCellRightB.classList.contains('black')){
+															
+								eatCell(eatCellRightB);
+							
+								return true;
+							}else{ console.log("Invalid Eat Move of black Piece"); return false; }
+					}
+
+					console.log("row =",row,"col =", col,"==>> rowto =", rowto,"colto =",colto);
+					return false;
+
+				}//End of if else if(dama)->elseif(white)->else(black) block of function boolean validMove
+			}
+			
+		
+
+		}
+
+	function eatCell(item){
+		const pieceColor = item.classList.contains('white')? "White" : "Black";
+		console.log(pieceColor,"Eaten Move",item);
+		item.classList.remove('piece','black','white','dama');
+		item.classList.add('empty');
+	}
+	
+	function searchTarget(starting,ending,direction){
+
+		let x = Number(starting.getAttribute("data-row"));
+		let y = Number(starting.getAttribute("data-col"));
+		const rowto = Number(ending.getAttribute("data-row"));
+		const colto = Number(ending.getAttribute("data-col"));
+
+		let pieceColor = starting.classList.contains('black') ? 'black' : 'white';
+
+		if(starting.classList.contains('empty')){
+			pieceColor = ending.classList.contains('black') ? 'black' : 'white';
+		}
+
+		while(x != rowto && y != colto){
+						
+						if( x < 0 || y < 0 || x > 7 || y > 7 ) break;
+
+						if(direction === "up-right"){
+							x--; y++;
+						}else if(direction === "up-left"){
+							x--; y--;
+						}else if(direction === "down-right"){	
+							x++; y++;
+						}else if(direction === "down-left"){
+							x++; y--;
+						}else  break; //if direction is null will return null as well;
+					
+						let str = `[data-row="${x}"][data-col="${y}"]`;
+						
+						const targetCell = document.querySelector(str);
+						if(x === rowto && y === colto) return targetCell;
+
+						if(targetCell != null){
+
+							if(!targetCell.classList?.contains('empty') && targetCell.classList?.contains(pieceColor)){
+								console.log("Invalid First target cell because the same color");
+								break;
+							}
+							else if(!targetCell?.classList.contains('empty') && !targetCell?.classList.contains(pieceColor)){
+
+									console.log("Target Found! x = "+x+" y = "+y);
+									rowt = parseInt(targetCell.getAttribute("data-row"));
+									colt = parseInt(targetCell.getAttribute("data-col"));
+									return targetCell;
+							}
+
+						}
+					
+
+		}
+		return null;
+	}
+	/*
+	window.addEventListener('DOMContentLoaded', function() {
+		var iframe = document.getElementById('mine-iframe');
+		fetch('Mine.html')
+		.then(response => response.text())
+		.then(html => {
+		 var minegame = html.querySelector("gamecontainer");
+		 iframe.srcdoc = minegame.outerHTML;
+		}); 
+	}); */
+	</script>
+</body>
+</html>
