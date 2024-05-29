@@ -3,12 +3,19 @@
 <head>
 	<title>Dama</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 	<style>
 
 		.grid {
 			display: grid;
-			grid-template-columns: repeat(8,60px);
-			grid-template-rows: repeat(8,60px);
+			grid-template-columns: repeat(8,1fr);
+			grid-template-rows: repeat(8,auto);
 			box-sizing: border-box;
 			border: 2px solid black;
 			border-radius: 4px;
@@ -69,84 +76,234 @@
 		.piece.white:hover{
 			
 		}
+		.navbar{
+			width: 100%;
+			min-width: 550px;
+		}
 		.container {
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
 			align-items: center;
 			height: 100vh;
-			padding: 10px;
+			width: 550px;
+			/* padding: 10px; */
 			box-sizing: border-box;
+			
 		}
 		.left {
 			flex: 1 1 15%;
-			background-color: #f2f2f2;
-			height: 100%;
+			/* background-color: #f2f2f2; */
+			/* height: 100%; */
 		}
 		.center {
 			flex: 1 1 50%;
-			/* background-color: #d9d9d9; */
-			height: 100%;
+			padding: 10px;
+			margin-bottom: 0;
+			/* background-color: #AC4242; */
+			/*background-color: #d9d9d9; */
+			/* height: 100%; */
 		}
 		.right {
 			flex: 1 1 25%;
-			background-color: #f2f2f2;
-			height: 100%;
+			/* background-color: #f2f2f2; */
+			/* height: 100%; */
+			padding-top: 0;
+			padding-bottom: 20px;
 		}
 		.bottom {
 			flex: 1 1 100%;
-			background-color: #bfbfbf;
+			background-color: #AC4242;
 			height: 20%;
 		}
-		@media only screen and (max-width: 600px) {
-    			.container {
-        			flex-direction: column;
-        			align-items: stretch; /* Ensures containers stretch to full width */
-    			}
 
-    			.left{
-        			order: 2; /* Move left container to the bottom */
-    			}
-
-    			.right{
-        			order: 3; /* Move right container to the bottom */
-    			}
-			.bottom {
-				order: 4;
-			}
-
-    			.center{
-        			order: 1; /* Keep center container at the top */
-       		 		width: 100%;
-       		 		margin-bottom: 10px; /* Adds spacing between containers */
-    			}
+		.bg-maroon{
+			background: maroon;
 		}
-	
-		
+		.game-description{
+			background-color: #AC4242;
+			color: #f2f2f2;
+    		padding: 20px;
+    		border-radius: 5px;
+    		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		.menu{
+			/* width: 300px; */
+            /* padding: 20px; */
+            border: 2px solid #550000;
+            border-radius: 8px;
+            text-align: center;
+            margin: 0 auto;
+            margin-top: 20px;
+			background: #D44E4E;
+			position: relative;
+			
+		}
+		.menu-title{
+			padding: 0%;
+			font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+			color: #f2f2f2;
+		}
+		.menu-button{
+			background-color: maroon;
+			color: #f2f2f2;
+			padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+		}
+		.menu-button:hover{
+			background: #9b0000;
+		}
+		.game-stat{
+			background: #D44E4E;
+		}
+		.menu-body{
+			color: white;
+		}
+
+		.message-container {
+  			/* position: absolute; */
+  			top: 50%;
+  			left: 0;
+  			/* transform: translate(-100%, -50%); */
+  			transition: transform 0.5s ease-in-out;
+  			/* background-color: rgba(0, 0, 0, 0.8); */
+  			color: white;
+  			padding: 10px 20px;
+  			border-radius: 5px;
+  			/* z-index: 999; */
+		}
+
+		.message-container.animate {
+  			transform: translate(0%, -50%);
+		}
+
+		.message-text {
+  			font-size: 18px;
+		}
+
+		.message-text.zoom {
+  			animation: zoomInOut 1s ease-in-out forwards;
+		}
+
+		@keyframes zoomInOut {
+  			0% {
+    		transform: scale(1);
+  		}
+  			50% {
+    		transform: scale(1.5);
+  		}
+  			100% {
+    		transform: scale(1);
+  		}
+		}
+
+
 	</style>
 </head>
 <body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-maroon w-100">
+        <a class="navbar-brand" href="#">Ehexibit</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+	
 	<div class="container">
-		<div class="left"></div>
+		<div class="left">
+			<div class="menu">
+				<div class="menu-title bg-maroon">Game Status</div>
+				<div class="menu-body">
+					<div id="messageContainer" class="message-container">
+						<div id="messageText" class="message-text"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
 		
 		<div class="center">
 			<div class="grid"></div> <!-- Inside this grid, a board cell will be created by javaScript -->
 			<!--<iframe src="Mine.html" height="100%" width="100%"></iframe>-->
 		</div>
 		
-		<div class="right"></div>
-		<div class="bottom"></div>
+		<div class="right">
+			<div class="menu">
+				<div class="menu-title bg-maroon">Menu</div>
+				<button class="menu-button" onclick="gameInitialize()">Restart</button>
+				<button class="menu-button">Settings</button>
+			</div>
+		</div>
+		<div class="bottom">
+			<div class="game-description">
+				<div class="menu">
+					<div class="menu-title bg-maroon">
+						<h2>About Dama</h2>
+					</div>
+					<p>
+						Dama, also known as Filipino Checkers, is a popular board game in the Philippines. It's a variant of the traditional checkers game, but with some distinct rules and features that set it apart.
+					</p>
+					<p>
+						Here's a brief overview of how Dama is played:
+					</p>
+					<ol>
+						<li><strong>Board:</strong> Dama is played on the same board as checkers, with an 8x8 grid. The board is set up so that each player has their pieces on the three rows closest to them.</li>
+						<li><strong>Pieces:</strong> Each player starts with 12 pieces, typically in contrasting colors (like black and white). The pieces are usually discs or checkers.</li>
+						<li><strong>Movement:</strong> Pieces can move diagonally forward, capturing an opponent's piece by jumping over it diagonally if the adjacent space is empty. Multiple captures can be made in a single turn if the opportunity arises, similar to international checkers.</li>
+						<li><strong>Kinged Pieces:</strong> When a piece reaches the last row on the opponent's side, it is "kinged" and gains the ability to move both forward and backward diagonally. This gives kinged pieces more mobility and strategic advantage.</li>
+						<li><strong>Objective:</strong> The objective of the game is to capture all of the opponent's pieces or to block them so they can't make any more moves.</li>
+						<li><strong>Variants:</strong> There are regional variations of Dama with slightly different rules depending on the locality in the Philippines.</li>
+					</ol>
+					<p>
+						Dama is not only a game of strategy but also a social activity enjoyed by people of all ages. It's often played casually in homes, schools, and public spaces, fostering camaraderie and friendly competition.
+					</p>
+
+
+
+				</div>
+				
+				
+			</div>
+		</div>
+		<section id="about"></section>
+		
 	</div>
 
 
 		<script>
 		
-		const container = document.querySelector('.grid');
+		let select = null;
+		let whiteTurn = true; // control turn 1 at a time // lets add function hasToEat() to allow extra moves
+		gameInitialize();
+
+		
+		
+
+		function gameInitialize(){
+			whiteTurn = true; //Self Explenatory
+			const container = document.querySelector('.grid');
+			container.innerHTML = '';
+			feedMessage("Game Started");	
+		
 		
 		var p = 12;
 		var cp = 12;
 		let inc = 0;
 		let board = [];
+
+		//This part will create the board and pieces
 		for(let i = 0; i < 8; i++){
 			
 			board[i] = [];
@@ -195,8 +352,18 @@
 		// Select all grid items
 		const gridItems = document.querySelectorAll('.grid-item');
 
-		let select = null;
-		let whiteTurn = true; // control turn 1 at a time // lets add function hasToEat() to allow extra moves
+			// Loop through each grid item and add a click event listener
+			gridItems.forEach((item, index) => {
+  					if (!item.classList.contains('blackcell')) {
+    						item.addEventListener('click', () => {
+      					const items = Array.from(gridItems);
+      					handleClick(item, items, index);
+    						});
+  					}
+			});
+
+			
+		}
 
 		//hasToEat(){
 			//this will check if current select has something to eat for an extra move
@@ -220,9 +387,13 @@
   			} else if (select !== null && items[select]?.classList.contains('selected')) {
     					const pieceColor = items[select].classList.contains('white') ? 'white' : 'black';
 
-					if(items[select].classList?.contains('white') && whiteTurn === false){ 										console.log("Black should move");	return;	
+					if(items[select].classList?.contains('white') && whiteTurn === false){ 
+						feedMessage("Black should move");
+						console.log("Black should move");	return;	
 					}
-					if(items[select].classList?.contains('black') && whiteTurn === true){ 										console.log("White Should move");	return;	
+					if(items[select].classList?.contains('black') && whiteTurn === true){ 										
+						feedMessage("White should move");
+						console.log("White Should move");	return;	
 					}
 
    					if (validMove(items[select], item)) {
@@ -247,11 +418,13 @@
 						if(items[select].classList?.contains('black')){ 
 							//add && !hasToEat() on if statement to check if finish moving		
 							whiteTurn = true;
+							feedMessage("White Turn!");
 							console.log("White Turn!");
 						}
 						if(items[select].classList?.contains('white')){ 
 							//add && !hasToEat() on if statement to check if finish moving
 							whiteTurn = false;
+							feedMessage("Black Turn!");
 							console.log("Black Turn!");
 						}
       					
@@ -262,16 +435,6 @@
   			}
 
 		}//End of handeclick()
-
-			// Loop through each grid item and add a click event listener
-			gridItems.forEach((item, index) => {
-  					if (!item.classList.contains('blackcell')) {
-    						item.addEventListener('click', () => {
-      					const items = Array.from(gridItems);
-      					handleClick(item, items, index);
-    						});
-  					}
-			});
 
 		function checkCellState(){
 			const pieces = document.querySelectorAll('.piece');
@@ -347,6 +510,7 @@
 						console.log("Amazing found moves!"); //if gap between fromCell toCell is empty then it can move
 						return true;
 					}
+					feedMessage("Invalid Move of Dama");
 					console.log("Invalid Move of Dama");
 					return false;
 
@@ -440,7 +604,13 @@
 		item.classList.remove('piece','black','white','dama');
 		item.classList.add('empty');
 	}
-	
+
+	/*
+	*
+	*
+	*
+	*
+	*/
 	function searchTarget(starting,ending,direction){
 
 		let x = Number(starting.getAttribute("data-row"));
@@ -493,6 +663,31 @@
 		}
 		return null;
 	}
+
+	function feedMessage(message) {
+  		const messageContainer = document.getElementById('messageContainer');
+  		const messageText = document.getElementById('messageText');
+
+  		// Set the message
+  		messageText.textContent = message;
+
+  		// Add animation class to container
+  		/* messageContainer.classList.add('animate'); */
+
+  		// Add zoom animation to text
+  		/* messageText.classList.add('zoom'); */
+
+  		// After animation, remove animation classes
+  	/* 	setTimeout(() => {
+    		messageContainer.classList.remove('animate');
+    		messageText.classList.remove('zoom');
+  		}, 2000); // Adjust the time based on your animation duration */
+	}
+
+
+
+
+
 	/*
 	window.addEventListener('DOMContentLoaded', function() {
 		var iframe = document.getElementById('mine-iframe');
