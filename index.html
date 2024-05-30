@@ -286,6 +286,8 @@
 		
 		let select = null;
 		let whiteTurn = true; // control turn 1 at a time // lets add function hasToEat() to allow extra moves
+		let whiteEat = false;
+		let blackEat = false;
 		gameInitialize();
 
 		
@@ -293,6 +295,8 @@
 
 		function gameInitialize(){
 			whiteTurn = true; //Self Explenatory
+			whiteEat = false;
+			blackEat = false;
 			const container = document.querySelector('.grid');
 			container.innerHTML = '';
 			feedMessage("Game Started");	
@@ -351,12 +355,13 @@
 		
 		// Select all grid items
 		const gridItems = document.querySelectorAll('.grid-item');
+		const items  = Array.from(gridItems);
 
 			// Loop through each grid item and add a click event listener
 			gridItems.forEach((item, index) => {
   					if (!item.classList.contains('blackcell')) {
     						item.addEventListener('click', () => {
-      					const items = Array.from(gridItems);
+      					/* const items = Array.from(gridItems); */
       					handleClick(item, items, index);
     						});
   					}
@@ -385,19 +390,21 @@
       				select = index;
    			 	}
   			} else if (select !== null && items[select]?.classList.contains('selected')) {
-    					const pieceColor = items[select].classList.contains('white') ? 'white' : 'black';
 
+    					const pieceColor = items[select].classList.contains('white') ? 'white' : 'black';
+					//If the selected piece is white && whiteturn is false then black should move
 					if(items[select].classList?.contains('white') && whiteTurn === false){ 
 						feedMessage("Black should move");
 						console.log("Black should move");	return;	
 					}
+					//If the selected piece is white && whiteturn is false then black should move it return and notify that the white piece should move
 					if(items[select].classList?.contains('black') && whiteTurn === true){ 										
 						feedMessage("White should move");
 						console.log("White Should move");	return;	
 					}
 
    					if (validMove(items[select], item)) {
-      					item.classList.add('piece', pieceColor);
+      					item.classList.add('piece', pieceColor); //If the move is valid then place the piece to a selected destination
       					items[select].classList.remove('piece', pieceColor);
       					items[select].classList.remove('selected');
       					items[select].classList.add('empty');
@@ -414,15 +421,35 @@
         							item.classList.add('dama');
        							items[select].classList.remove('dama');
       					}
+
 						select = index;
-						if(items[select].classList?.contains('black')){ 
-							//add && !hasToEat() on if statement to check if finish moving		
+
+						if(items[select].classList?.contains('black')){
+							 
+							//add && !hasToEat() on if statement to check if finish moving
+							
+								if(hasToEat(items[select])){
+									feedMessage("Black has to eat move!" ,hasToEat());
+									return;
+								}else{
+									whiteTurn = true;
+								}
+									
 							whiteTurn = true;
 							feedMessage("White Turn!");
 							console.log("White Turn!");
 						}
 						if(items[select].classList?.contains('white')){ 
 							//add && !hasToEat() on if statement to check if finish moving
+							
+								if(hasToEat(items[select])){
+									feedMessage("White has to eat move!", hasToEat());
+									console.log(hasToEat());
+								   return;
+								}else{
+									whiteTurn = false;
+								}
+							
 							whiteTurn = false;
 							feedMessage("Black Turn!");
 							console.log("Black Turn!");
@@ -448,7 +475,56 @@
 					});
 		
 		}
+		function hasToEat(item){
+			const pieces =  document.querySelectorAll('piece'); //Select All piece Dama, ordinary pawn
+			
+			if (!item) {
+    			console.error('Element not found');
+    			return false;
+  			}
 
+  			const row = parseInt(item.getAttribute('data-row'));
+  			const col = parseInt(item.getAttribute('data-col'));
+
+  			console.log(row, col);
+
+  			const createQuerySelector = (row, col) => `[data-row="${row}"][data-col="${col}"]`;
+
+  			const directions = [
+    			{ eatRow: row - 1, eatCol: col + 1, landRow: row - 2, landCol: col + 2 },
+    			{ eatRow: row - 1, eatCol: col - 1, landRow: row - 2, landCol: col - 2 },
+    			{ eatRow: row + 1, eatCol: col + 1, landRow: row + 2, landCol: col + 2 },
+    			{ eatRow: row + 1, eatCol: col - 1, landRow: row + 2, landCol: col - 2 },
+  			];
+
+  			
+  			const opponentPawn = item.classList.contains('black') ? 'white' : 'black';
+
+			
+
+  			for (const { eatRow, eatCol, landRow, landCol } of directions) {
+    			const eatCell = document.querySelector(createQuerySelector(eatRow, eatCol));
+    			const landingCell = document.querySelector(createQuerySelector(landRow, landCol));
+
+    		if (
+      			eatCell &&
+      			landingCell &&
+      			eatCell.classList.contains(opponentPawn)&&
+      			landingCell.classList.contains('empty')
+    			) {
+      			return true; // Capture move is available
+    			}
+  			}
+
+  			return false; // No capture moves available
+		}
+
+	
+
+		
+
+			
+		
 		function gameWin(){
 		}
 
@@ -475,7 +551,7 @@
 
 				const pieceColor = fromCell.classList.contains('black') ? 'black' : 'white';
 
-			    if(fromCell.classList.contains('dama')){
+			    if(fromCell.classList.contains('dama')){ //Dama move can land on any point as long as there are no two piece to jump on or it's not the same piece
 
 					let dir = null; 
 
@@ -532,7 +608,7 @@
 						if(!eatCellLeft.classList.contains('empty') && !eatCellLeft.classList.contains('white')){
 						
 							eatCell(eatCellLeft);
-
+							whiteEat = true;
 							return true;
 
 						}else{ console.log("Invalid Eat Move of White Piece"); return false; }
@@ -541,7 +617,7 @@
 							if(!eatCellRight.classList.contains('empty') && !eatCellRight.classList.contains('white')){
 							
 								eatCell(eatCellRight);
-							
+								blackEat = true;
 								return true;
 
 							}else{ 
@@ -601,10 +677,12 @@
 		}
 
 	function eatCell(item){
+
 		const pieceColor = item.classList.contains('white')? "White" : "Black";
 		console.log(pieceColor,"Eaten Move",item);
 		item.classList.remove('piece','black','white','dama');
 		item.classList.add('empty');
+
 	}
 
 	/*
@@ -613,7 +691,7 @@
 	*
 	*
 	*/
-	function searchTarget(starting,ending,direction){
+	function searchTarget(starting,ending,direction){  //This is eat move search validator
 
 		let x = Number(starting.getAttribute("data-row"));
 		let y = Number(starting.getAttribute("data-col"));
