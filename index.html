@@ -12,6 +12,10 @@
     <script src="./js/aos.js"></script>
 	<style>
 
+		/* .body{
+			display: flex;
+			flex-direction: column;
+		} */
 		.grid {
 			display: grid;
 			grid-template-columns: repeat(8,1fr);
@@ -21,15 +25,15 @@
 			border-radius: 4px;
 			margin: auto;
 			align-items: center;	
-			grid-gap: 2px;
+			grid-gap: 1px;
 			padding: 1px;
-			width: 500px;
+			width: 360px;
 
 		}
 		.grid-item {
 			display: flex;
-			width: 60px;
-			height: 60px;
+			width: 43px;
+			height: 43px;
 			border-radius: 4px;
 			border: 1px solid grey;
 			cursor: pointer;
@@ -46,8 +50,8 @@
 			background-color: black;
 		}
 		.piece{
-			height: 55px;
-			width: 55px;
+			height: 40px;
+			width: 40px;
 			border-radius: 50%;
 			background-color: black;
 			box-shadow: inset 0 1px 4px black;
@@ -78,17 +82,18 @@
 		}
 		.navbar{
 			width: 100%;
-			min-width: 550px;
+			/* min-width: 550px; */
 		}
 		.container {
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
 			align-items: center;
-			height: 100vh;
-			width: 550px;
+			height: 100%;
+			width: 400px;
 			/* padding: 10px; */
 			box-sizing: border-box;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 			
 		}
 		.left {
@@ -98,7 +103,7 @@
 		}
 		.center {
 			flex: 1 1 50%;
-			padding: 10px;
+			padding-top: 10px;
 			margin-bottom: 0;
 			/* background-color: #AC4242; */
 			/*background-color: #d9d9d9; */
@@ -251,11 +256,12 @@
 				<button class="menu-button">Settings</button>
 			</div>
 		</div>
+		
 		<div class="bottom">
 			<div class="game-description">
 				<div class="menu">
 					<div class="menu-title bg-maroon">
-						<h2>About Dama</h2>
+						About Dama
 					</div>
 					<p>
 						Dama, also known as Filipino Checkers, is a popular board game in the Philippines. It's a variant of the traditional checkers game, but with some distinct rules and features that set it apart.
@@ -283,12 +289,13 @@
 			</div>
 			
 		</div>
-		<section id="about"></section>	
+		<section id="about"></section>
+			
 	</div>
-	<section id="contact"></section>
+	
 
-	<div class="container">
-		<!-- <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+	<!-- <div class="container">
+		<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
 		  <div class="col-md-4 d-flex align-items-center">
 			<a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
 			  <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
@@ -301,9 +308,9 @@
 			<li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"/></svg></a></li>
 			<li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"/></svg></a></li>
 		  </ul>
-		</footer> -->
-	  </div>
-
+		</footer>
+	  </div> -->
+	<section id="contact"></section>
 	<footer class="footer">
 		<div class="bg-maroon text-center">
 		  <span style="color: #f2f2f2;">© 2024 Ehexibit</span>
