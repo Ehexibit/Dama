@@ -325,8 +325,6 @@
 		let blackEat = false;
 		gameInitialize();
 
-		
-		
 
 		function gameInitialize(){
 			whiteTurn = true; //Self Explenatory
@@ -565,16 +563,11 @@ if (
   }
 }
 if(blackEat == true || whiteEat == true){
-	blackEat = false;
-	whiteEat = false;
+	blackEat = false; //This line of code and above if statement after for loop is really important for continous eat move
+	whiteEat = false; //This line of code and above if statement after for loop is really important for continous eat move
 }
 return false; // No capture moves available
 }
-
-
-
-
-
 
 
 function gameWin(){
@@ -735,11 +728,12 @@ const pieceColor = item.classList.contains('white')? "White" : "Black";
 console.log(pieceColor,"Eaten Move",item);
 item.classList.remove('piece','black','white','dama');
 item.classList.add('empty');
-if(pieceColor ==="White") whiteEat = true;
-else blackEat = true;
- 
-}
-
+if(pieceColor ==="White") whiteEat = true; 	//Flag that an eat move has been made. 
+else blackEat = true;						//we can actually use just eatmove without particular identification whether it is White or Black Piece
+											//But making it distiguished will help us later in the following additional features like force eating
+}											//Where opponent will purposely bait the piece to be eaten to take advantage of the game. It is actually on the game rule
+											//Example I want to bait my 1 piece so that I can capture 2, 3 or more opponent piece. Since force eat move is implented
+											//Opponent needs to eat move even if it will result for him sacrifising 2 or more piece in return.
 /*
 *
 *
